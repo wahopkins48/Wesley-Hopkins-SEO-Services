@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Pricing Widget</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: transparent; }
+        /* Ensure the widget fits nicely in iframe */
+        #root { width: 100%; overflow-x: hidden; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONSTANTS & DATA ---
+        const PRICING_TIERS = [
+            {
+                id: 'foundation',
+                name: 'FOUNDATION',
+                subtitle: 'TIER 1',
+                price: '$950',
+                description: 'Best for low-competition markets & new visibility builds',
+                color: 'zinc',
+                focus: 'Accuracy, structure, and baseline AI + search visibility',
+                features: [
+                    { text: 'Local keyword & intent targeting (10 terms)' },
+                    { text: 'On-page optimization for:', subfeatures: ['Homepage', 'Primary service pages'] },
+                    { text: 'Google Business Profile optimization + monthly health check' },
+                    { text: 'Citation cleanup & standardization (20 core directories)' },
+                    { text: 'Monthly blog post on your website (1 post/month)' },
+                    { text: 'Third-party blog publishing:', subfeatures: ['Medium, LinkedIn, or Hashnode (1 post/month)'] },
+                    { text: 'Foundational backlinks:', subfeatures: ['2 contextual backlink insertions into existing articles'] },
+                    { text: 'Basic reputation and brand mention monitoring' },
+                    { text: 'Quarterly performance summary' },
+                    { text: 'Editorial media placements: Available as an optional add-on' },
+                ]
+            },
+            {
+                id: 'authority',
+                name: 'AUTHORITY',
+                subtitle: 'TIER 2',
+                price: '$1,850',
+                description: 'For competitive local markets that need to win trust',
+                color: 'cyan',
+                highlight: true,
+                focus: 'Authority building, trust expansion, competitive positioning',
+                features: [
+                    { text: 'Everything in Tier 1, plus:' },
+                    { text: 'Expanded keyword & intent coverage (15 terms)' },
+                    { text: 'Full website optimization:', subfeatures: ['Homepage', 'All main service pages', 'Location pages'] },
+                    { text: 'Monthly Google Business Profile optimization sprint' },
+                    { text: 'Citation expansion & monitoring (20 core directories)' },
+                    { text: 'Blog publishing on your website (2 posts/month)' },
+                    { text: 'Third-party blog publishing:', subfeatures: ['Medium, LinkedIn, Hashnode (2 posts/month)'] },
+                    { text: 'Backlink acquisition:', subfeatures: ['4 contextual backlink insertions into existing articles'] },
+                    { text: 'Editorial media placement:', subfeatures: ['2 authority publisher articles per month with backlink'] },
+                    { text: 'Brand entity reinforcement signals' },
+                    { text: 'Quarterly competitive visibility review' },
+                ]
+            },
+            {
+                id: 'dominance',
+                name: 'DOMINANCE',
+                subtitle: 'TIER 3',
+                price: '$3,200',
+                description: 'For saturated industries & aggressive markets',
+                color: 'orange',
+                focus: 'Market dominance, AI authority, long-term defensibility',
+                features: [
+                    { text: 'Everything in Tier 2, plus:' },
+                    { text: 'Advanced keyword & market dominance targeting (Unlimited terms)' },
+                    { text: 'Continuous on-page optimization across all priority pages' },
+                    { text: 'Weekly Google Business Profile optimization & monitoring' },
+                    { text: 'Citation defense + expansion (20 core directories)' },
+                    { text: 'Website blog publishing (2 posts/month)' },
+                    { text: 'Third-party blog publishing:', subfeatures: ['Medium, LinkedIn, Hashnode (3 posts/month)'] },
+                    { text: 'Backlink acquisition:', subfeatures: ['6 contextual backlink insertions into existing high-authority articles'] },
+                    { text: 'Editorial media placements:', subfeatures: ['3 authority media features per month with backlinks'] },
+                    { text: 'Ongoing entity & reputation signal monitoring' },
+                    { text: 'AI visibility & competitive intelligence tracking' },
+                    { text: 'Executive-level quarterly performance briefing' },
+                ]
+            }
+        ];
+
+        const FOOTER_NOTE = "Important Client Note: All backlinks and editorial placements are subject to third-party publisher guidelines and acceptance. Rankings, traffic, and AI references are not guaranteed. These services establish authority, trust signals, and eligibility for modern discovery systems.";
+
+        // --- ICONS ---
+        const CheckCircle2 = ({ size = 24, strokeWidth = 2, className = '' }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+            </svg>
+        );
+
+        // --- COMPONENTS ---
+        const Hexagon = ({ colorClass, price, className = '' }) => {
+            return (
+                <div className={`relative flex items-center justify-center w-24 h-24 ${className}`}>
+                    <svg viewBox="0 0 100 100" className={`absolute inset-0 w-full h-full drop-shadow-lg ${colorClass}`} fill="currentColor">
+                        <path d="M50 0 L95 25 L95 75 L50 100 L5 75 L5 25 Z" />
+                    </svg>
+                    <div className="relative z-10 text-white font-bold text-xl tracking-tight">
+                        {price}
+                        <span className="block text-[10px] font-normal text-center opacity-90">/mo</span>
+                    </div>
+                </div>
+            );
+        };
+
+        const PricingCard = ({ tier }) => {
+            const colorMap = {
+                zinc: { hex: 'text-zinc-600', bg: 'bg-zinc-600', button: 'bg-zinc-700 hover:bg-zinc-800', border: 'border-zinc-200', highlight: 'text-zinc-700' },
+                cyan: { hex: 'text-cyan-600', bg: 'bg-cyan-600', button: 'bg-cyan-600 hover:bg-cyan-700', border: 'border-cyan-200', highlight: 'text-cyan-700' },
+                orange: { hex: 'text-orange-500', bg: 'bg-orange-500', button: 'bg-orange-600 hover:bg-orange-700', border: 'border-orange-200', highlight: 'text-orange-600' },
+            };
+
+            const colors = colorMap[tier.color];
+
+            return (
+                <div className={`relative flex flex-col pt-12 bg-white rounded-3xl shadow-xl transition-transform duration-300 hover:-translate-y-2 border ${colors.border} h-full`}>
+                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 z-20">
+                        <Hexagon colorClass={colors.hex} price={tier.price} />
+                        <div className={`absolute top-4 left-2 right-2 h-16 blur-xl opacity-30 ${colors.bg} -z-10`}></div>
+                    </div>
+
+                    <div className="px-8 pb-8 flex-grow flex flex-col">
+                        <div className="text-center mt-6 mb-6">
+                            <h4 className="text-sm font-bold tracking-widest text-zinc-400 uppercase mb-1">{tier.subtitle}</h4>
+                            <h3 className={`text-2xl font-bold uppercase tracking-wider ${colors.highlight}`}>{tier.name}</h3>
+                            <p className="text-zinc-500 text-sm mt-3 h-10 leading-snug flex items-center justify-center">{tier.description}</p>
+                        </div>
+                        <div className="w-16 h-1 mx-auto rounded-full bg-zinc-100 mb-6"></div>
+                        <ul className="space-y-4 mb-8 text-sm text-zinc-600 flex-grow">
+                            {tier.features.map((feature, index) => (
+                                <li key={index} className="flex items-start gap-3">
+                                    <div className={`mt-0.5 min-w-[16px] ${colors.highlight}`}>
+                                        <CheckCircle2 size={16} strokeWidth={3} />
+                                    </div>
+                                    <div>
+                                        <span className={feature.text.startsWith('Everything') ? 'font-semibold text-zinc-800' : ''}>{feature.text}</span>
+                                        {feature.subfeatures && (
+                                            <ul className="mt-2 space-y-1 ml-1 border-l-2 border-zinc-100 pl-3">
+                                                {feature.subfeatures.map((sub, idx) => (
+                                                    <li key={idx} className="text-xs text-zinc-500 flex items-center gap-2">
+                                                        <span className={`w-1 h-1 rounded-full ${colors.bg}`}></span>
+                                                        {sub}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="bg-zinc-50 rounded-xl p-4 mb-6 border border-zinc-100">
+                            <span className="text-xs font-bold text-zinc-400 uppercase block mb-1">Key Focus</span>
+                            <p className={`text-sm font-medium ${colors.highlight} leading-tight`}>{tier.focus}</p>
+                        </div>
+                        <div className="mt-auto">
+                            <button className={`w-full py-4 rounded-xl text-white font-bold tracking-wider shadow-lg transition-all active:scale-95 ${colors.button}`}>SELECT PLAN</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const PricingWidget = () => {
+            return (
+                <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                    <div className="text-center mb-20">
+                        <h2 className="text-3xl md:text-5xl font-extrabold text-zinc-900 tracking-tight mb-4">
+                            Optimized for <span className="text-zinc-900 underline decoration-orange-500 decoration-4 underline-offset-4">Discovery</span>
+                        </h2>
+                        <p className="text-lg text-zinc-600 max-w-2xl mx-auto">
+                            Choose a plan tailored to your market competition. From foundational SEO to aggressive Generative Engine Optimization dominance.
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-20 gap-x-8 items-stretch mb-16">
+                        {PRICING_TIERS.map((tier) => (
+                            <PricingCard key={tier.id} tier={tier} />
+                        ))}
+                    </div>
+                    <div className="mt-12 border-t border-zinc-200 pt-8 text-center">
+                        <p className="text-xs text-zinc-400 max-w-4xl mx-auto leading-relaxed">{FOOTER_NOTE}</p>
+                    </div>
+                </section>
+            );
+        };
+
+        const App = () => {
+            return (
+                <div className="min-h-screen bg-zinc-50 bg-[radial-gradient(#e4e4e7_1px,transparent_1px)] [background-size:16px_16px] py-4">
+                    <PricingWidget />
+                </div>
+            );
+        };
+
+        // --- MOUNT ---
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
