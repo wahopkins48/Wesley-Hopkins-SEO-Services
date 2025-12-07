@@ -21,6 +21,41 @@
   }
 }
 </script>
+    const App = () => {
+    return (
+        <div className="min-h-screen bg-zinc-50 bg-[radial-gradient(#e4e4e7_1px,transparent_1px)] [background-size:16px_16px] py-8">
+
+            {/* Header with Dual Logos */}
+            <div className="w-full max-w-7xl mx-auto px-6 mb-16">
+                <div className="flex items-center justify-between">
+                    
+                    {/* Left Logo - Crawled */}
+                    <img
+                        src="./crawledlogo.png"
+                        alt="Crawled by Wesley Hopkins"
+                        className="h-12 md:h-16 object-contain"
+                    />
+
+                    {/* Center Text (Optional – remove if you want only logos) */}
+                    <div className="hidden md:block text-center">
+                        <p className="text-xs uppercase tracking-widest text-zinc-400 mb-1">Pricing & Services</p>
+                        <p className="text-sm font-semibold text-zinc-700">wesleyhopkins.digital</p>
+                    </div>
+
+                    {/* Right Logo - WH Digital */}
+                    <img
+                        src="./whdigital.png"
+                        alt="Wesley Hopkins Digital"
+                        className="h-12 md:h-16 object-contain"
+                    />
+                </div>
+            </div>
+
+            <PricingWidget />
+        </div>
+    );
+};
+
 </head>
   <body>
     <div id="root"></div>
